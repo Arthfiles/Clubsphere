@@ -1,0 +1,2163 @@
+/*
+  CLUBESPARE — MAIN STYLESHEET
+  ------------------------------------------------------------
+  Section order:
+  01. Design tokens
+  02. Base reset and page defaults
+  03. Background decoration
+  04. Shared layout container
+  05. Header and navigation
+  06. Hero section
+  07. Summary metrics
+  08. Shared section headings
+  09. Club directory search and filters
+  10. Club cards and club branding
+  11. Empty search results
+  12. Directory footer details
+  13. Events showcase
+  14. About the platform
+  15. Site footer
+  16. Dialogs and notifications
+  17–19. Responsive layouts
+  20. College logo in the hero
+  21. Light-theme contrast and accessibility fixes
+
+  HOW TO CUSTOMIZE:
+  - Change colors and fonts in :root and body.light first.
+  - Change component appearance in its named section.
+  - Keep responsive rules near the bottom so mobile layouts remain intact.
+*/
+*
+{
+  box-sizing:border-box
+}
+/* 01. DESIGN TOKENS
+   Global colors, shadows, and font families. Start here when re-theming. */
+:root
+{
+  color-scheme:dark;
+  --bg:#10131c;
+  --panel:#171b27;
+  --panel2:#1d2230;
+  --text:#f4f5fa;
+  --muted:#a2a9bb;
+  --muted2:#737d92;
+  --line:#2a3040;
+  --purple:#454352;
+  --purple2:#7d6bff;
+  --mint:#85f1d5;
+  --orange:#ffbd8b;
+  --shadow:0 24px 70px #0004;
+  --font:'DM Sans',sans-serif;
+  --display:'Manrope',sans-serif
+}
+/* 02. BASE RESET AND PAGE DEFAULTS
+   Default page behavior, body typography, links, buttons, and keyboard focus. */
+html
+{
+  scroll-behavior:smooth;
+  scroll-padding-top:92px
+}
+body
+{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  line-height:1.6;
+  overflow-x:hidden;
+  transition:background .25s,color .25s
+}
+body.light
+{
+  color-scheme:light;
+  --bg:#f6f7fb;
+  --panel:#fff;
+  --panel2:#f0f2f9;
+  --text:#171a27;
+  --muted:#626b7e;
+  --muted2:#8991a3;
+  --line:#e2e5ef;
+  --shadow:0 24px 70px #25305612
+}
+a
+{
+  color:inherit;
+  text-decoration:none
+}
+button,input
+{
+  font:inherit
+}
+button
+{
+  cursor:pointer
+}
+button:focus-visible,a:focus-visible,input:focus-visible
+{
+  outline:2px solid var(--purple);
+  outline-offset:3px
+}
+/* 03. BACKGROUND DECORATION
+   Soft blurred glows behind the page content. */
+.ambient
+{
+  position:absolute;
+  z-index:-1;
+  pointer-events:none;
+  filter:blur(90px);
+  border-radius:50%;
+  opacity:.14
+}
+.ambient-a
+{
+  width:430px;
+  height:430px;
+  background:#ee6837;
+  top:130px;
+  right:-180px
+}
+.ambient-b
+{
+  width:360px;
+  height:360px;
+  background:#19c6b0;
+  top:800px;
+  left:-210px;
+  opacity:.07
+}
+/* 04. SHARED LAYOUT CONTAINER
+   Centers the main content and limits its width on large screens. */
+.shell
+{
+  width:min(1180px,calc(100% - 64px));
+  margin-inline:auto
+}
+/* 05. HEADER AND NAVIGATION
+   Sticky header, brand lockup, navigation links, and menu controls. */
+
+/* ==========================================
+   FALLING TAGLINE EFFECT
+
+   Purpose:
+   Makes each word tilt and fall when hovered.
+   The words return to their original position
+   when the pointer leaves the tagline.
+========================================== */
+
+.fall-text {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.30em 0.50em;
+
+    font: inherit;
+    font-size: clamp(9rem, 5vw, 9rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.045em;
+
+    cursor: pointer;
+    perspective: 700px;
+}
+
+.fall-word {
+    display: inline-flex;
+    gap: 0.5em;
+}
+
+.fall-word span {
+    display: inline-block;
+    transform-origin: 50% 0%;
+    transition:
+        transform 650ms cubic-bezier(.2, .8, .25, 1),
+        opacity 400ms ease;
+}
+
+/* Scatter and drop words on hover */
+.fall-text:hover .fall-word:nth-child(1) span:nth-child(1) {
+    transform: translate(-8px, 55px) rotate(-20deg);
+}
+
+.fall-text:hover .fall-word:nth-child(1) span:nth-child(2) {
+    transform: translate(2px, 45px) rotate(23deg);
+}
+
+.fall-text:hover .fall-word:nth-child(1) span:nth-child(3) {
+    transform: translate(12px, 65px) rotate(-2deg);
+}
+
+.fall-text:hover .fall-word:nth-child(2) span:nth-child(1) {
+    transform: translate(-10px, 55px) rotate(-34deg);
+}
+
+.fall-text:hover .fall-word:nth-child(2) span:nth-child(2) {
+    transform: translate(5px, 32px) rotate(1deg);
+}
+
+.fall-text:hover .fall-word:nth-child(2) span:nth-child(3) {
+    transform: translate(14px, 70px) rotate(34deg);
+}
+
+/* Keyboard accessibility */
+.fall-text:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 8px;
+}
+
+/* Reduce motion for users who request it */
+@media (prefers-reduced-motion: reduce) {
+    .fall-word span {
+        transition: none;
+    }
+
+    .fall-text:hover .fall-word span {
+        transform: none;
+    }
+}
+
+.topbar
+{
+  height:82px;
+  padding:0 max(calc((100% - 1280px)/2),32px);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--line);
+  background:color-mix(in srgb,var(--bg) 85%,transparent);
+  backdrop-filter:blur(20px);
+  position:sticky;
+  top:0;
+  z-index:20
+}
+.brand
+{
+  display:flex;
+  align-items:center;
+  gap:10px
+}
+.brand-symbol
+{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:36px;
+  height:36px;
+  overflow:hidden;
+  border-radius:12px;
+  background:rgba(9, 115, 168, 0.02);
+  box-shadow:0 0 0 1px rgba(218, 229, 19, 0.06);
+  flex-shrink:0
+}
+.brand-symbol img
+{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain
+}
+.brand-symbol span
+{
+  color:var(--purple)
+}
+.brand-name
+{
+  font:800 15px var(--display);
+  letter-spacing:-.6px
+}
+.brand-name span
+{
+  font-weight:500;
+  color:var(--muted)
+}
+.navigation
+{
+  display:flex;
+  align-items:center;
+  gap:30px
+}
+.nav-item
+{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:700;
+  transition:color .2s
+}
+.nav-item:hover,.nav-item.active
+{
+  color:var(--text)
+}
+.nav-item.active:after
+{
+  content:"";
+  display:block;
+  height:2px;
+  background:var(--purple);
+  border-radius:2px;
+  position:relative;
+  top:29px
+}
+.button
+{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  border:1px solid transparent;
+  border-radius:10px;
+  padding:12px 17px;
+  font-size:12px;
+  font-weight:800;
+  transition:transform .2s,background .2s,border-color .2s
+}
+.button:hover
+{
+  transform:translateY(-2px)
+}
+.button-primary
+{
+  background:var(--purple2);
+  color:#fff;
+  box-shadow:0 8px 25px #7d6bff2c
+}
+.button-primary:hover
+{
+  background:#8c7cff
+}
+.button-primary span
+{
+  font-size:16px
+}
+.nav-signin
+{
+  padding:10px 14px
+}
+.icon-button,.mobile-menu
+{
+  width:38px;
+  height:38px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--panel);
+  color:var(--text);
+  font-size:18px
+}
+.mobile-menu
+{
+  display:none
+}
+/* 06. HERO SECTION
+   Main headline, calls to action, social proof, and decorative hero visual. */
+.hero
+{
+  padding-top:86px;
+  min-height:600px;
+  display:grid;
+  grid-template-columns:1.03fr .97fr;
+  align-items:center;
+  column-gap:50px;
+  position:relative
+}
+.hero-copy
+{
+  padding-bottom:55px
+}
+.live-pill
+{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  border:1px solid var(--line);
+  background:var(--panel);
+  border-radius:50px;
+  padding:7px 11px;
+  color:var(--muted);
+  font-size:9px;
+  letter-spacing:1.4px;
+  font-weight:800
+}
+.pulse,.status-dot
+{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--mint);
+  box-shadow:0 0 0 4px #85f1d51a;
+  display:inline-block
+}
+.hero h1
+{
+  font:800 clamp(44px,5.5vw,72px)/1.08 var(--display);
+  letter-spacing:-4.3px;
+  margin:24px 0 20px
+}
+.gradient-text
+{
+  background:linear-gradient(100deg,#b4aaff 2%,#8c7bff 42%,#80ecd7 105%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent
+}
+.hero-lede
+{
+  max-width:510px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.95
+}
+.hero-cta
+{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:28px
+}
+.button-xl
+{
+  padding:15px 18px
+}
+.button-ghost
+{
+  border-color:var(--line);
+  background:transparent;
+  color:var(--text)
+}
+.button-ghost:hover
+{
+  border-color:var(--muted2);
+  background:var(--panel)
+}
+.play-icon
+{
+  font-size:9px;
+  border:1px solid var(--muted2);
+  border-radius:50%;
+  width:20px;
+  height:20px;
+  display:grid;
+  place-items:center;
+  padding-left:2px
+}
+.social-proof
+{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-top:34px;
+  color:var(--muted);
+  font-size:11px
+}
+.social-proof b
+{
+  color:var(--text)
+}
+.avatar-stack
+{
+  display:flex;
+  padding-left:5px
+}
+.avatar-stack span
+{
+  display:grid;
+  place-items:center;
+  width:27px;
+  height:27px;
+  margin-left:-5px;
+  border:2px solid var(--bg);
+  border-radius:50%;
+  background:#37364e;
+  color:#04f681;
+  font-size:9px;
+  font-weight:800
+}
+.avatar-stack span:nth-child(2)
+{
+  background:#3a635f
+}
+.avatar-stack span:nth-child(3)
+{
+  background:#795b48
+}
+.avatar-stack span:nth-child(4)
+{
+  background:var(--purple2)
+}
+.hero-visual
+{
+  height:420px;
+  position:relative;
+  display:grid;
+  place-items:center;
+  isolation:isolate
+}
+.visual-grid
+{
+  position:absolute;
+  inset:30px 10px;
+  background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);
+  background-size:30px 30px;
+  mask-image:radial-gradient(ellipse,black,transparent 72%);
+  z-index:-1
+}
+.visual-ring
+{
+  position:absolute;
+  border:1px solid #a69aff36;
+  border-radius:50%;
+  transform:rotate(-25deg)
+}
+.ring-1
+{
+  width:390px;
+  height:240px
+}
+.ring-2
+{
+  width:310px;
+  height:390px;
+  transform:rotate(39deg);
+  border-color:#85f1d533
+}
+.ring-3
+{
+  width:270px;
+  height:270px;
+  border-style:dashed;
+  border-color:#a69aff30
+}
+.visual-core
+{
+  width:184px;
+  height:184px;
+  border-radius:48px;
+  background:linear-gradient(140deg,#8978ff,#5443ce 75%);
+  box-shadow:0 25px 85px #6755f75c, inset 0 1px #ffffff70;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  position:relative;
+  transform:rotate(-8deg)
+}
+.core-orbit
+{
+  font-size:22px;
+  color:#c9fff1;
+  position:absolute;
+  top:20px;
+  right:24px
+}
+.core-c
+{
+  font:800 86px/.9 var(--display);
+  letter-spacing:-10px;
+  color:white
+}
+.core-c span
+{
+  color:#85f1d5
+}
+.core-caption
+{
+  font-size:8px;
+  line-height:1.5;
+  letter-spacing:2px;
+  text-align:center;
+  font-weight:800;
+  color:#e4e1ff;
+  margin-top:8px
+}
+.float-card
+{
+  position:absolute;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  background:color-mix(in srgb,var(--panel) 94%,transparent);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px 14px;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(12px)
+}
+.float-card b,.float-card small
+{
+  display:block
+}
+.float-card b
+{
+  font-size:10px
+}
+.float-card small
+{
+  font-size:9px;
+  color:var(--muted);
+  margin-top:3px
+}
+.float-club
+{
+  top:45px;
+  right:-5px
+}
+.float-event
+{
+  bottom:47px;
+  left:-6px
+}
+.float-emoji
+{
+  width:35px;
+  height:35px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  font-size:19px
+}
+.purple
+{
+  background:#443b72;
+  color:#c6bcff
+}
+.mint
+{
+  background:#244e4b;
+  color:#9affdf
+}
+.float-arrow
+{
+  color:var(--purple);
+  margin-left:6px
+}
+.decor-star
+{
+  position:absolute;
+  font-size:25px;
+  color:var(--purple)
+}
+.star-a
+{
+  top:64px;
+  left:38px
+}
+.star-b
+{
+  right:40px;
+  bottom:75px;
+  color:var(--mint)
+}
+.decor-dot
+{
+  position:absolute;
+  left:20%;
+  bottom:20%;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--mint);
+  box-shadow:0 0 20px var(--mint)
+}
+.hero-bottom
+{
+  position:absolute;
+  bottom:14px;
+  left:0;
+  right:0;
+  display:flex;
+  justify-content:space-between;
+  border-top:1px solid var(--line);
+  padding-top:17px;
+  color:var(--muted2);
+  font-size:8px;
+  letter-spacing:1.5px;
+  font-weight:800
+}
+.scroll-cue span
+{
+  color:var(--purple);
+  font-size:13px;
+  margin-left:8px
+}
+/* 07. SUMMARY METRICS
+   Statistics row directly below the hero. */
+.metrics
+{
+  margin-top:36px;
+  border:1px solid var(--line);
+  border-radius:17px;
+  background:var(--panel);
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr auto;
+  align-items:center;
+  padding:21px 25px;
+  gap:20px
+}
+.metric
+{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-right:1px solid var(--line)
+}
+.metric-icon
+{
+  width:37px;
+  height:37px;
+  border-radius:11px;
+  background:#3a315e;
+  color:#c7bdff;
+  display:grid;
+  place-items:center;
+  font-size:20px
+}
+.mint-icon
+{
+  background:#244b47;
+  color:var(--mint)
+}
+.orange-icon
+{
+  background:#f05c17;
+  color:var(--orange)
+}
+.metric strong,.metric span
+{
+  display:block
+}
+.metric strong
+{
+  font:800 18px var(--display);
+  letter-spacing:-.5px
+}
+.metric div>span
+{
+  font-size:10px;
+  color:var(--muted)
+}
+.metric-note
+{
+  font-size:8px;
+  letter-spacing:1.2px;
+  color:var(--muted);
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  white-space:nowrap
+}
+.metric-note .status-dot
+{
+  width:6px;
+  height:6px
+}
+/* 08. SHARED SECTION HEADINGS
+   Reusable section spacing, labels, headings, and intro text. */
+.section
+{
+  padding-top:118px;
+  padding-bottom:115px
+}
+.section-top
+{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:30px
+}
+.section-kicker
+{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  color:var(--muted);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1.7px
+}
+.section-kicker>span
+{
+  width:27px;
+  height:1px;
+  background:var(--purple)
+}
+.section-top h2,.about-copy h2
+{
+  font:800 clamp(34px,4.2vw,49px)/1.2 var(--display);
+  letter-spacing:-2.6px;
+  margin:13px 0
+}
+.section-intro
+{
+  font-size:13px;
+  color:var(--muted);
+  margin:0
+}
+.section-count
+{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding-bottom:6px
+}
+.section-count strong
+{
+  font:800 38px var(--display);
+  letter-spacing:-2px;
+  color:var(--purple)
+}
+.section-count span
+{
+  font-size:8px;
+  line-height:1.5;
+  letter-spacing:1.3px;
+  color:var(--muted);
+  font-weight:800
+}
+/* 09. CLUB DIRECTORY SEARCH AND FILTERS
+   Search field, category filter controls, and directory grid. */
+.discovery-toolbar
+{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  align-items:center;
+  margin:32px 0 22px;
+  flex-wrap:wrap
+}
+.search-field
+{
+  height:45px;
+  flex:0 1 330px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 12px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--panel);
+  color:var(--muted)
+}
+.search-icon
+{
+  font-size:25px
+}
+.search-field input
+{
+  border:0;
+  outline:0;
+  background:transparent;
+  color:var(--text);
+  font-size:11px;
+  min-width:0;
+  flex:1
+}
+.search-field kbd
+{
+  font-size:9px;
+  color:var(--muted2);
+  border:1px solid var(--line);
+  border-radius:5px;
+  padding:3px 5px
+}
+.filters
+{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap
+}
+.filter
+{
+  border:1px solid transparent;
+  background:transparent;
+  border-radius:9px;
+  padding:10px 12px;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:700
+}
+.filter:hover
+{
+  background:var(--panel)
+}
+.filter.active
+{
+  background:var(--panel2);
+  border-color:var(--line);
+  color:var(--text)
+}
+.filter span
+{
+  color:var(--purple);
+  margin-left:5px
+}
+.club-grid
+{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:15px
+}
+/* 10. CLUB CARDS AND CLUB BRANDING
+   Covers, favourites, categories, club descriptions, tags, and actions. */
+.club-card
+{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:20px;
+  overflow:hidden;
+  min-width:0;
+  transition:transform .25s,border-color .25s,box-shadow .25s
+}
+.club-card:hover
+{
+  transform:translateY(-5px);
+  border-color:#534a87;
+  box-shadow:var(--shadow)
+}
+.club-cover
+{
+  height:177px;
+  position:relative;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  background:#080b12
+}
+.club-cover:after
+{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(180deg,#0005,transparent 32%,#0003)
+}
+.club-cover img
+{
+  width:88%;
+  height:156%;
+  object-fit:contain;
+  padding:12px;
+  position:relative;
+  z-index:1
+}
+.club-kaizen .club-cover
+{
+  background:radial-gradient(ellipse at 50% 50%,#1b49ae,#090c14 75%)
+}
+.club-nex .club-cover
+{
+  background:radial-gradient(ellipse at 50% 50%,#272016,#080808 75%)
+}
+.club-malhar .club-cover
+{
+  background:radial-gradient(ellipse at 50% 50%,#3d2a0d,#080808 75%)
+}
+.club-khel .club-cover
+{
+  background:radial-gradient(ellipse at 50% 50%,#253d68,#0b101c 75%)
+}
+.cover-index
+{
+  position:absolute;
+  z-index:2;
+  top:18px;
+  left:12px;
+  color:#ffffffb8;
+  font-size:7px;
+  letter-spacing:1.2px;
+  font-weight:800
+}
+.favorite
+{
+  position:absolute;
+  z-index:3;
+  right:11px;
+  top:10px;
+  width:30px;
+  height:30px;
+  border:1px solid #ffffff42;
+  background:#1118279c;
+  color:#fff;
+  border-radius:9px;
+  font-size:19px;
+  line-height:1
+}
+.favorite.saved
+{
+  background:var(--purple2);
+  border-color:var(--purple2)
+}
+.category-tag
+{
+  position:absolute;
+  z-index:2;
+  bottom:17px;
+  left:12px;
+  padding:5px 8px;
+  border:1px solid #ffffff2a;
+  background:#111827c9;
+  color:#f3f2ff;
+  border-radius:5px;
+  font-size:7px;
+  letter-spacing:1px;
+  font-weight:800
+}
+.club-body
+{
+  padding:20px 15px 14px
+}
+.club-heading
+{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:5px
+}
+.club-heading h3
+{
+  font:800 16px var(--display);
+  letter-spacing:-.5px;
+  margin:0
+}
+.club-mark
+{
+  font:800 12px var(--display);
+  color:var(--purple);
+  border:1px solid var(--line);
+  width:26px;
+  height:26px;
+  display:grid;
+  place-items:center;
+  border-radius:7px
+}
+.club-body>p
+{
+  font-size:19px;
+  line-height:1.8;
+  color:var(--muted);
+  min-height:80px;
+  margin:11px 0 15px
+}
+.tag-row
+{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  min-height:26px
+}
+.tag-row span
+{
+  font-size:8px;
+  color:var(--muted);
+  padding:4px 7px;
+  background:var(--panel2);
+  border-radius:5px
+}
+.card-action
+{
+  width:100%;
+  margin-top:16px;
+  padding:12px 0 0;
+  border:0;
+  border-top:1px solid var(--line);
+  background:transparent;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:var(--text);
+  font-size:10px;
+  font-weight:800
+}
+.card-action span
+{
+  font-size:16px;
+  color:var(--purple);
+  transition:transform .2s
+}
+.card-action:hover span
+{
+  transform:translate(3px,-2px)
+}
+.khel-logo
+{
+  position:relative;
+  z-index:1;
+  width:200px;
+  height:200px;
+  border:1px solid #d2b87b80;
+  border-radius:50%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  color:#f1dca5;
+  box-shadow:0 0 40px #b48b3b28
+}
+.khel-logo strong
+{
+  font:800 39px var(--display);
+  letter-spacing:-3px
+}
+.khel-logo span
+{
+  font-size:7px;
+  letter-spacing:1.5px
+}
+.khel-logo i
+{
+  position:absolute;
+  top:8px;
+  right:13px;
+  font-size:12px;
+  color:#fff1c4
+}
+/* 11. EMPTY SEARCH RESULTS
+   Message displayed when no clubs match the current search or filters. */
+.empty-state
+{
+  border:1px dashed var(--line);
+  border-radius:16px;
+  text-align:center;
+  padding:45px 20px;
+  color:var(--muted)
+}
+.empty-state>span
+{
+  font-size:35px;
+  color:var(--purple)
+}
+.empty-state h3
+{
+  color:var(--text);
+  margin:8px 0
+}
+.empty-state p
+{
+  font-size:12px
+}
+/* 12. DIRECTORY FOOTER DETAILS
+   Small supporting notes and links below the club grid. */
+.directory-footer
+{
+  margin-top:25px;
+  padding-top:17px;
+  border-top:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  color:var(--muted2);
+  font-size:8px;
+  letter-spacing:1px;
+  font-weight:800
+}
+.directory-footer>span
+{
+  display:flex;
+  align-items:center;
+  gap:8px
+}
+.directory-footer a
+{
+  color:var(--purple);
+  font-size:10px;
+  letter-spacing:0
+}
+.directory-footer a span
+{
+  font-size:14px;
+  margin-left:5px
+}
+/* 13. EVENTS SHOWCASE
+   Event promotion panel, event cards, icons, and supporting text. */
+.events-section
+{
+  background:linear-gradient(120deg,#1c1b34,#211d3b 55%,#142d30);
+  border-top:1px solid #35314e;
+  border-bottom:1px solid #35314e;
+  position:relative;
+  overflow:hidden
+}
+.events-section:before
+{
+  content:"";
+  position:absolute;
+  right:-100px;
+  top:-240px;
+  width:620px;
+  height:620px;
+  border:1px solid #ffffff0c;
+  border-radius:50%;
+  box-shadow:0 0 0 45px #ffffff05,0 0 0 90px #ffffff04,0 0 0 140px #ffffff03
+}
+.events-inner
+{
+  padding-top:90px;
+  padding-bottom:90px;
+  display:grid;
+  grid-template-columns:.85fr 1.15fr;
+  gap:70px;
+  align-items:center;
+  position:relative
+}
+.light-kicker
+{
+  color:#b9b4d5
+}
+.event-copy h2
+{
+  font:800 clamp(37px,4.3vw,54px)/1.13 var(--display);
+  letter-spacing:-2.8px;
+  margin:19px 0
+}
+.event-copy h2 span
+{
+  color:var(--mint)
+}
+.event-copy>p
+{
+  font-size:12px;
+  color:#c0bed1;
+  line-height:1.9;
+  max-width:370px;
+  margin-bottom:25px
+}
+.button-white
+{
+  background:#f7f5ff;
+  color:#342c70
+}
+.button-white:hover
+{
+  background:#fff
+}
+.event-stack
+{
+  display:flex;
+  flex-direction:column;
+  gap:10px
+}
+.event-card
+{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:15px;
+  background:#ffffff0a;
+  border:1px solid #ffffff15;
+  border-radius:13px;
+  transition:background .2s,transform .2s
+}
+.event-card:hover
+{
+  background:#ffffff10;
+  transform:translateX(4px)
+}
+.event-symbol
+{
+  width:43px;
+  height:43px;
+  border-radius:11px;
+  display:grid;
+  place-items:center;
+  font-size:20px;
+  flex-shrink:0
+}
+.symbol-purple
+{
+  background:#3d3565;
+  color:#c8bdff
+}
+.symbol-mint
+{
+  background:#214943;
+  color:#9effdd
+}
+.symbol-orange
+{
+  background:#513b2c;
+  color:#ffcc9e
+}
+.symbol-blue
+{
+  background:#253e5e;
+  color:#a5d7ff
+}
+.event-info
+{
+  flex:1;
+  min-width:0
+}
+.event-info>span
+{
+  font-size:7px;
+  font-weight:800;
+  letter-spacing:1.2px;
+  color:#b8b0ff
+}
+.event-info h3
+{
+  font:700 12px var(--display);
+  margin:4px 0;
+  color:#f4f2ff
+}
+.event-info p
+{
+  font-size:9px;
+  color:#b5b3c7;
+  margin:0
+}
+.event-arrow
+{
+  color:#b5aaff;
+  font-size:18px
+}
+.event-disclaimer
+{
+  font-size:9px;
+  color:#a6a1bd;
+  text-align:right;
+  padding-top:4px
+}
+/* 14. ABOUT THE PLATFORM
+   Brand emblem, platform description, and core values. */
+.about-section
+{
+  padding-top:105px;
+  padding-bottom:110px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:75px
+}
+.about-emblem
+{
+  width:190px;
+  height:190px;
+  flex:0 0 190px;
+  border-radius:48px;
+  border:1px solid #8d7aff42;
+  background:radial-gradient(circle at 35% 25%,#4a3d81,#1c1a31 75%);
+  display:grid;
+  place-items:center;
+  position:relative;
+  box-shadow:inset 0 1px #ffffff1a,0 20px 60px #0002;
+  transform:rotate(-6deg)
+}
+.about-emblem>span
+{
+  font:800 105px/.9 var(--display);
+  letter-spacing:-12px;
+  color:#d4cdff
+}
+.about-emblem i
+{
+  position:absolute;
+  right:29px;
+  top:29px;
+  color:var(--mint);
+  font-size:25px;
+  font-style:normal
+}
+.about-copy
+{
+  max-width:580px
+}
+.about-copy h2
+{
+  font-size:42px
+}
+.about-copy>p
+{
+  font-size:12px;
+  line-height:2;
+  color:var(--muted);
+  max-width:530px
+}
+.about-values
+{
+  display:flex;
+  gap:22px;
+  margin-top:22px
+}
+.about-values span
+{
+  font-size:10px;
+  font-weight:800;
+  color:var(--text)
+}
+.about-values b
+{
+  font-size:9px;
+  color:var(--purple);
+  margin-right:6px
+}
+/* 15. SITE FOOTER
+   Footer content, links, and supporting notes. */
+.footer
+{
+  min-height:85px;
+  border-top:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  padding:20px max(calc((100% - 1280px)/2),32px);
+  color:var(--muted2)
+}
+.footer .brand-symbol
+{
+  font-size:27px
+}
+.footer .brand-name
+{
+  font-size:13px
+}
+.footer-line,.footer-note
+{
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:1.2px
+}
+.footer-note
+{
+  font-weight:500;
+  letter-spacing:0
+}
+/* 16. DIALOGS AND NOTIFICATIONS
+   Dialog overlays, modal panels, and toast feedback. */
+.app-dialog
+{
+  width:min(440px,calc(100% - 30px));
+  padding:30px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:var(--panel);
+  color:var(--text);
+  box-shadow:0 30px 100px #0008;
+  position:relative
+}
+.app-dialog::backdrop
+{
+  background:#070911c9;
+  backdrop-filter:blur(8px)
+}
+.dialog-x
+{
+  position:absolute;
+  right:14px;
+  top:12px;
+  background:transparent;
+  border:0;
+  color:var(--muted);
+  font-size:26px
+}
+.dialog-art
+{
+  width:47px;
+  height:47px;
+  display:grid;
+  place-items:center;
+  background:var(--panel2);
+  border-radius:13px;
+  color:var(--purple);
+  font-size:24px;
+  margin-bottom:19px
+}
+.app-dialog h2
+{
+  font:800 25px var(--display);
+  letter-spacing:-1px;
+  margin:8px 0
+}
+.app-dialog>p
+{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.9
+}
+.dialog-callout
+{
+  font-size:10px;
+  color:var(--muted);
+  line-height:1.8;
+  padding:12px;
+  background:var(--panel2);
+  border-radius:9px;
+  margin:18px 0
+}
+.dialog-confirm
+{
+  width:100%
+}
+.toast
+{
+  position:fixed;
+  right:25px;
+  bottom:25px;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 16px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:12px;
+  box-shadow:var(--shadow);
+  transform:translateY(25px);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s,transform .25s
+}
+.toast.show
+{
+  transform:translateY(0);
+  opacity:1
+}
+.toast>span
+{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:#234d44;
+  color:var(--mint);
+  display:grid;
+  place-items:center;
+  font-size:12px
+}
+.toast p
+{
+  font-size:11px;
+  margin:0
+}
+.reveal
+{
+  animation:rise .7s both
+}
+@keyframes rise
+{
+  from
+  {
+    opacity:0;
+    transform:translateY(16px)
+  }
+  to
+  {
+    opacity:1;
+    transform:translateY(0)
+  }
+}
+@media(prefers-reduced-motion:reduce)
+{
+  *,*:before,*:after
+  {
+    scroll-behavior:auto!important;
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important
+  }
+}
+/* 17. RESPONSIVE LAYOUT — TABLETS AND SMALL LAPTOPS
+   Adjust columns and spacing at medium screen widths. */
+@media(max-width:1050px)
+{
+  .shell
+  {
+    width:calc(100% - 48px)
+  }
+  .topbar
+  {
+    padding:0 24px
+  }
+  .hero
+  {
+    column-gap:15px
+  }
+  .hero h1
+  {
+    font-size:57px
+  }
+  .club-grid
+  {
+    grid-template-columns:repeat(2,minmax(0,1fr))
+  }
+  .club-cover
+  {
+    height:220px
+  }
+  .club-body>p
+  {
+    min-height:55px
+  }
+  .metrics
+  {
+    grid-template-columns:repeat(3,1fr)
+  }
+  .metric-note
+  {
+    grid-column:1/-1;
+    padding-top:12px;
+    border-top:1px solid var(--line)
+  }
+  .events-inner
+  {
+    gap:35px
+  }
+  .about-section
+  {
+    gap:45px
+  }
+}
+/* 18. RESPONSIVE LAYOUT — MOBILE
+   Stack sections and resize navigation and visual elements for phones. */
+@media(max-width:720px)
+{
+  .shell
+  {
+    width:calc(100% - 36px)
+  }
+  .topbar
+  {
+    height:70px;
+    padding:0 18px
+  }
+  .mobile-menu
+  {
+    display:block
+  }
+  .navigation
+  {
+    display:none;
+    position:absolute;
+    top:69px;
+    left:0;
+    right:0;
+    background:var(--panel);
+    padding:20px;
+    border-bottom:1px solid var(--line);
+    flex-direction:column;
+    align-items:stretch;
+    gap:16px
+  }
+  .navigation.open
+  {
+    display:flex
+  }
+  .navigation .nav-item.active:after
+  {
+    display:none
+  }
+  .navigation .icon-button
+  {
+    width:100%
+  }
+  .hero
+  {
+    padding-top:54px;
+    grid-template-columns:1fr;
+    min-height:auto
+  }
+  .hero-copy
+  {
+    padding-bottom:0
+  }
+  .hero h1
+  {
+    font-size:clamp(43px,10.5vw,62px);
+    letter-spacing:-3px
+  }
+  .hero-lede
+  {
+    font-size:13px
+  }
+  .hero-visual
+  {
+    height:330px;
+    margin-top:10px
+  }
+  .visual-core
+  {
+    width:145px;
+    height:145px;
+    border-radius:40px
+  }
+  .core-c
+  {
+    font-size:70px
+  }
+  .ring-1
+  {
+    width:300px;
+    height:190px
+  }
+  .ring-2
+  {
+    width:250px;
+    height:315px
+  }
+  .ring-3
+  {
+    width:220px;
+    height:220px
+  }
+  .float-club
+  {
+    top:20px;
+    right:-3px
+  }
+  .float-event
+  {
+    bottom:22px;
+    left:-3px
+  }
+  .hero-bottom
+  {
+    position:static;
+    margin-top:10px;
+    padding-bottom:5px;
+    font-size:7px
+  }
+  .metrics
+  {
+    width:calc(100% - 36px);
+    margin-top:23px;
+    padding:17px 13px;
+    grid-template-columns:1fr 1fr;
+    gap:16px
+  }
+  .metric
+  {
+    border-right:0;
+    gap:8px
+  }
+  .metric-icon
+  {
+    width:31px;
+    height:31px;
+    font-size:16px
+  }
+  .metric strong
+  {
+    font-size:15px
+  }
+  .metric div>span
+  {
+    font-size:9px
+  }
+  .metric-note
+  {
+    font-size:7px
+  }
+  .section
+  {
+    padding-top:82px;
+    padding-bottom:80px
+  }
+  .section-top
+  {
+    align-items:start
+  }
+  .section-top h2
+  {
+    font-size:36px;
+    letter-spacing:-2px
+  }
+  .section-intro
+  {
+    font-size:12px;
+    line-height:1.8;
+    max-width:400px
+  }
+  .section-count
+  {
+    display:none
+  }
+  .discovery-toolbar
+  {
+    margin-top:25px;
+    align-items:stretch
+  }
+  .search-field
+  {
+    flex-basis:100%
+  }
+  .filters
+  {
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    padding-bottom:5px
+  }
+  .filter
+  {
+    white-space:nowrap
+  }
+  .club-grid
+  {
+    gap:11px
+  }
+  .club-cover
+  {
+    height:145px
+  }
+  .club-cover img
+  {
+    padding:7px
+  }
+  .club-body
+  {
+    padding:13px 11px
+  }
+  .club-heading h3
+  {
+    font-size:14px
+  }
+  .club-body>p
+  {
+    font-size:10px;
+    min-height:90px;
+    line-height:1.75
+  }
+  .tag-row span
+  {
+    font-size:7px;
+    padding:4px 5px
+  }
+  .card-action
+  {
+    font-size:9px
+  }
+  .cover-index
+  {
+    font-size:6px;
+    left:8px
+  }
+  .category-tag
+  {
+    font-size:6px;
+    left:8px
+  }
+  .favorite
+  {
+    right:8px;
+    top:8px;
+    width:27px;
+    height:27px
+  }
+  .directory-footer
+  {
+    font-size:7px;
+    line-height:1.7
+  }
+  .directory-footer a
+  {
+    white-space:nowrap
+  }
+  .events-inner
+  {
+    padding-top:70px;
+    padding-bottom:70px;
+    grid-template-columns:1fr;
+    gap:30px
+  }
+  .event-copy h2
+  {
+    font-size:43px
+  }
+  .event-card
+  {
+    padding:12px;
+    gap:10px
+  }
+  .event-info h3
+  {
+    font-size:11px
+  }
+  .about-section
+  {
+    padding-top:75px;
+    padding-bottom:75px;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:30px
+  }
+  .about-emblem
+  {
+    width:125px;
+    height:125px;
+    flex-basis:125px;
+    border-radius:32px
+  }
+  .about-emblem>span
+  {
+    font-size:75px
+  }
+  .about-copy h2
+  {
+    font-size:35px
+  }
+  .footer
+  {
+    padding:22px 18px;
+    flex-wrap:wrap
+  }
+  .footer-note
+  {
+    width:100%
+  }
+}
+/* 19. RESPONSIVE LAYOUT — SMALL PHONES
+   Fine-tune cards and spacing on narrow screens. */
+@media(max-width:390px)
+{
+  .club-grid
+  {
+    grid-template-columns:1fr
+  }
+  .club-cover
+  {
+    height:200px
+  }
+  .club-body>p
+  {
+    min-height:0
+  }
+  .tag-row
+  {
+    min-height:0
+  }
+  .club-body
+  {
+    padding:15px
+  }
+  .hero-cta .button
+  {
+    flex:1
+  }
+  .social-proof
+  {
+    font-size:10px
+  }
+  .directory-footer
+  {
+    flex-direction:column
+  }
+  .float-card
+  {
+    padding:10px
+  }
+  .float-card b
+  {
+    font-size:9px
+  }
+  .float-card small
+  {
+    font-size:8px
+  }
+}
+/* 20. COLLEGE LOGO IN THE HERO
+   Sets the logo card size, aspect ratio, appearance, and mobile behavior. */
+/* Mirai School of Technology identity centered in the hero visual */
+.campus-logo-card
+{
+  width:min(100%,390px);
+  aspect-ratio:1200/900;
+  display:grid;
+  place-items:center;
+  position:relative;
+  z-index:1;
+  overflow:hidden;
+  border:1px solid #ffffff2b;
+  border-radius:22px;
+  background:#fff;
+  box-shadow:0 25px 85px #0004,0 0 0 8px #ffffff08;
+  transform:rotate(-2deg);
+  transition:transform .3s,box-shadow .3s
+}
+.campus-logo-card:hover
+{
+  transform:rotate(0) scale(1.025);
+  box-shadow:0 30px 95px #0005,0 0 0 8px #ffffff0b
+}
+.campus-logo-card img
+{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain
+}
+@media(max-width:720px)
+{
+  .campus-logo-card
+  {
+    width:min(86%,340px);
+    border-radius:16px
+  }
+  .hero-visual
+  {
+    overflow:visible
+  }
+}
+/* 21. LIGHT THEME CONTRAST AND ACCESSIBILITY FIXES
+   Improves light-mode readability and preserves hidden states.
+*/
+/* --------------------------------------------------------------------------
+   Theme contrast fixes/* --------------------------------------------------------------------------
+   Theme contrast fixes
+   Keep the event showcase and club artwork intentionally dark; these rules
+   improve contrast for the surrounding interface when the light theme is on.
+   -------------------------------------------------------------------------- */
+body.light .visual-grid
+{
+  background-image:
+  linear-gradient(#31385212 1px, transparent 1px),
+  linear-gradient(90deg, #31385212 1px, transparent 1px);
+}
+body.light .visual-ring
+{
+  border-color: #7666cf55;
+}
+body.light .ring-2
+{
+  border-color: #168b7d55;
+}
+body.light .ring-3
+{
+  border-color: #7666cf50;
+}
+body.light .live-pill,
+body.light .search-field,
+body.light .icon-button,
+body.light .mobile-menu,
+body.light .float-card,
+body.light .app-dialog,
+body.light .toast
+{
+  color: var(--text);
+}
+body.light .search-field input::placeholder
+{
+  color: #687186;
+  opacity: 1;
+}
+body.light .search-field kbd
+{
+  color: #596277;
+  background: #f8f9fd;
+}
+body.light .metric-icon
+{
+  background: #e9e5ff;
+  color: #4b3aa7;
+}
+body.light .metric-icon.mint-icon
+{
+  background: #d9f5ee;
+  color: #17685d;
+}
+body.light .metric-icon.orange-icon
+{
+  background: #fff0e2;
+  color: #8b4c1f;
+}
+body.light .about-emblem
+{
+  box-shadow: inset 0 1px #ffffff1a, 0 20px 60px #25305618;
+}
+body.light .campus-logo-card
+{
+  border-color: #dfe3ee;
+  box-shadow: 0 25px 70px #25305620, 0 0 0 8px #25305608;
+}
+body.light .campus-logo-card:hover
+{
+  box-shadow: 0 30px 85px #25305626, 0 0 0 8px #2530560b;
+}
+body.light .toast > span
+{
+  background: #d9f5ee;
+  color: #17685d;
+}
+/* Respect hidden states even when entrance animations are enabled. */
+[hidden]
+{
+  display: none !important;
+}
+
+/* ==========================================
+   SCROLL-ROTATING BACKGROUND LOGO
+
+   Purpose:
+   - Keeps the logo fixed behind the page.
+   - Fades it into the background.
+   - Prevents it from blocking clicks.
+   - Keeps it centered while scrolling.
+
+   Customize:
+   --spinner-opacity controls visibility.
+   --spinner-size controls the logo size.
+========================================== */
+
+:root {
+    --spinner-opacity: 0.07;
+    --spinner-size: min(72vw, 650px);
+}
+
+.scroll-spinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+
+    width: var(--spinner-size);
+    aspect-ratio: 1 / 1;
+
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    user-select: none;
+
+    z-index: 0;
+    opacity: var(--spinner-opacity);
+
+    overflow: hidden;
+}
+
+/* The image rotates through JavaScript. */
+.scroll-spinner__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+
+    transform: rotate(0deg);
+    will-change: transform;
+}
+
+/* Keep the actual website content above the logo. */
+body > header,
+body > main,
+body > footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* Keep popups and dialogs above the background. */
+dialog,
+.modal,
+.dialog,
+.toast-container {
+    z-index: 1000;
+}
+
+/* Smaller logo on phones. */
+@media (max-width: 650px) {
+    :root {
+        --spinner-size: 80vw;
+        --spinner-opacity: 0.40px;
+    }
+}
+
+/* Respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+    .scroll-spinner__image {
+        will-change: auto;
+    }
+}
+

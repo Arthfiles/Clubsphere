@@ -1,0 +1,267 @@
+(() => {
+  "use strict";
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+  const dialog = $("#appDialog");
+  const toast = $("#toast");
+  let toastTimer;
+  let activeFilter = "all";
+  const clubs = {
+    "KAIZEN": { kicker: "TECHNOLOGY · DEVELOPMENT · CP · KI", text: "KAIZEN combines Development, Competitive Programming, and KI into one technology community. This profile can later show the official description, leadership, upcoming events, membership rules, and announcements.", art: "⌘" },
+    "NEX-CELL": { kicker: "ENTREPRENEURSHIP · STARTUPS", text: "NEX-CELL is about entrepreneurship, startup culture, innovation, and helping students turn ideas into something real.", art: "↗" },
+    "MALHAR": { kicker: "EVENTS · ENTERTAINMENT · CULTURE", text: "MALHAR brings campus life to the stage through college events, entertainment, cultural activities, and campus-wide programs.", art: "✳" },
+    "Khel Society": { kicker: "SPORTS · GAMES · TOURNAMENTS", text: "Khel Society brings students together through sports, games, tournaments, and athletic activities. Add the official club logo when it is available.", art: "♜" }
+  };
+
+  function notify(message) {
+    $("#toastMessage").textContent = message;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+  }
+  function openDialog({kicker = "CAMPUS CIRCLE", title, text, callout = "This is a front-end prototype. Secure accounts, membership applications, registrations, and notifications need a backend.", art = "✦", action = "Sounds good"}) {
+    $("#dialogKicker").textContent = kicker;
+    $("#dialogTitle").textContent = title;
+    $("#dialogBody").textContent = text;
+    $("#dialogCallout").textContent = callout;
+    $("#dialogArt").textContent = art;
+    $("#dialogConfirm").innerHTML = `${action} <span>↗</span>`;
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else window.alert(`${title}\n\n${text}`);
+  }
+  $("#dialogClose").addEventListener("click", () => dialog.close());
+  $("#dialogConfirm").addEventListener("click", () => dialog.close());
+  dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); });
+
+  function filterClubs() {
+    const query = $("#clubSearch").value.trim().toLowerCase();
+    let count = 0;
+    $$(".club-card").forEach(card => {
+      const matchesCategory = activeFilter === "all" || card.dataset.category === activeFilter;
+      const matchesQuery = card.dataset.name.includes(query);
+      const visible = matchesCategory && matchesQuery;
+      card.hidden = !visible;
+      if (visible) count++;
+    });
+    $("#emptyState").hidden = count > 0;
+  }
+  $("#clubSearch").addEventListener("input", filterClubs);
+  $$(".filter").forEach(button => button.addEventListener("click", () => {
+    activeFilter = button.dataset.filter;
+    $$(".filter").forEach(item => item.classList.toggle("active", item === button));
+    filterClubs();
+  }));
+  $("#clearFilters").addEventListener("click", () => {
+    activeFilter = "all";
+    $("#clubSearch").value = "";
+    $$(".filter").forEach(item => item.classList.toggle("active", item.dataset.filter === "all"));
+    filterClubs();
+  });
+  // Keyboard shortcut to focus the directory search.
+  document.addEventListener("keydown", event => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+      event.preventDefault();
+      $("#clubSearch").focus();
+      $("#clubs").scrollIntoView({behavior: "smooth"});
+    }
+    if (event.key === "Escape" && dialog.open) dialog.close();
+  });
+
+  $$(".card-action").forEach(button => button.addEventListener("click", () => {
+    const name = button.dataset.club;
+    const club = clubs[name];
+    openDialog({kicker: club.kicker, title: name, text: club.text, art: club.art, action: "Close profile"});
+  }));
+
+  const storage = {
+    get(key, fallback) { try { const value = localStorage.getItem(key); return value === null ? fallback : value; } catch { return fallback; } },
+    set(key, value) { try { localStorage.setItem(key, value); } catch { /* Storage may be unavailable in private browsing. */ } }
+  };
+  const favouriteKey = "clubsphere-favourites";
+  const themeKey = "clubsphere-theme";
+  let favourites = [];
+  try {
+    const savedFavourites = storage.get(favouriteKey, storage.get("clubespare-favourites", "[]"));
+    favourites = JSON.parse(savedFavourites);
+  } catch { favourites = []; }
+  if (!Array.isArray(favourites)) favourites = [];
+  function paintFavourites() {
+    $$("[data-favorite]").forEach(button => {
+      const saved = favourites.includes(button.dataset.favorite);
+      button.classList.toggle("saved", saved);
+      button.textContent = saved ? "♥" : "♡";
+      button.setAttribute("aria-pressed", String(saved));
+      button.setAttribute("aria-label", `${saved ? "Remove" : "Save"} ${button.dataset.favorite} ${saved ? "from" : "to"} favourites`);
+    });
+  }
+  $$("[data-favorite]").forEach(button => button.addEventListener("click", () => {
+    const name = button.dataset.favorite;
+    favourites = favourites.includes(name) ? favourites.filter(item => item !== name) : [...favourites, name];
+    storage.set(favouriteKey, JSON.stringify(favourites));
+    paintFavourites();
+    notify(favourites.includes(name) ? `${name} added to your favourites` : `${name} removed from favourites`);
+  }));
+  paintFavourites();
+
+  const body = document.body;
+  function setTheme(theme) {
+    const light = theme === "light";
+    body.classList.toggle("light", light);
+    $("#themeIcon").textContent = light ? "☾" : "☼";
+    $("#themeToggle").setAttribute("aria-label", light ? "Switch to dark theme" : "Switch to light theme");
+    storage.set(themeKey, theme);
+  }
+  setTheme(storage.get(themeKey, storage.get("clubespare-theme", "dark")));
+  $("#themeToggle").addEventListener("click", () => {
+    const next = body.classList.contains("light") ? "dark" : "light";
+    setTheme(next);
+    notify(`${next === "light" ? "Light" : "Dark"} theme enabled`);
+  });
+
+  const mobileMenu = $("#mobileMenu");
+  const navigation = $("#navigation");
+  mobileMenu.addEventListener("click", () => {
+    const expanded = navigation.classList.toggle("open");
+    mobileMenu.setAttribute("aria-expanded", String(expanded));
+    mobileMenu.setAttribute("aria-label", expanded ? "Close navigation" : "Open navigation");
+    mobileMenu.textContent = expanded ? "×" : "☰";
+  });
+  $$(".nav-item", navigation).forEach(link => link.addEventListener("click", () => {
+    navigation.classList.remove("open");
+    mobileMenu.setAttribute("aria-expanded", "false");
+    mobileMenu.textContent = "☰";
+  }));
+
+  $("#signInBtn").addEventListener("click", () => openDialog({
+    kicker: "STUDENT ACCOUNT", title: "Your campus life, in one place.",
+    text: "Secure student sign-in will unlock your dashboard, membership requests, event registrations, notifications, and participation history.",
+    callout: "Authentication is not connected yet. Before real launch, add verified student accounts, password recovery, and role-based access for students, club leaders, and college admins.",
+    art: "↗", action: "Got it"
+  }));
+  $("#eventsExplore").addEventListener("click", () => openDialog({
+    kicker: "EVENT DISCOVERY", title: "Make room for what’s next.",
+    text: "The next version can show real events with dates, venues, registration rules, capacity, organizer details, and cancellation updates. Event ideas shown on this page are illustrative only.",
+    callout: "Per-event registration policy: public guest registration or login-required registration. Guest registration must not create a student account or club membership.",
+    art: "◷", action: "Sounds good"
+  }));
+
+  // Small entrance treatment for cards; functionality remains available if observers are unsupported.
+  if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in-view");
+        observer.unobserve(entry.target);
+      }
+    }), { threshold: 0.08 });
+    $$(".club-card, .event-card, .about-copy").forEach(el => {
+      el.style.opacity = "0";
+      el.style.transform = "translateY(12px)";
+      el.style.transition = "opacity .5s ease, transform .5s ease";
+      observer.observe(el);
+    });
+    const style = document.createElement("style");
+    style.textContent = ".in-view{opacity:1!important;transform:translateY(0)!important}";
+    document.head.appendChild(style);
+  }
+
+})()
+
+/* ==========================================
+   SCROLL-BASED LOGO ROTATION
+
+   Purpose:
+   Rotates the background logo as the user
+   moves down or up the page.
+
+   Customize:
+   rotationSpeed = 0.25 means 0.25 degrees
+   of rotation per pixel scrolled.
+========================================== */
+
+function initScrollSpinner() {
+    const spinner = document.querySelector(
+        ".scroll-spinner__image"
+    );
+
+    if (!spinner) return;
+
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+    );
+
+    const rotationSpeed = 0.25;
+
+    let animationFrame = null;
+
+    function updateSpinner() {
+        animationFrame = null;
+
+        if (prefersReducedMotion.matches) {
+            spinner.style.transform = "rotate(0deg)";
+            return;
+        }
+
+        const scrollPosition = window.scrollY || 0;
+        const rotation = scrollPosition * rotationSpeed;
+
+        spinner.style.transform = `rotate(${rotation}deg)`;
+    }
+
+    function requestSpinnerUpdate() {
+        if (animationFrame !== null) return;
+
+        animationFrame = requestAnimationFrame(
+            updateSpinner
+        );
+    }
+
+    window.addEventListener(
+        "scroll",
+        requestSpinnerUpdate,
+        { passive: true }
+    );
+
+    window.addEventListener(
+        "resize",
+        requestSpinnerUpdate,
+        { passive: true }
+    );
+
+    prefersReducedMotion.addEventListener(
+        "change",
+        requestSpinnerUpdate
+    );
+
+    updateSpinner();
+}
+
+/* Initialize after the HTML has loaded. */
+if (document.readyState === "loading") {
+    document.addEventListener(
+        "DOMContentLoaded",
+        initScrollSpinner
+    );
+} else {
+    initScrollSpinner();
+}
+
+/* Cursor-driven tagline movement */
+const fallText = document.querySelector(".fall-text");
+
+if (fallText) {
+    fallText.addEventListener("mousemove", (event) => {
+        const rect = fallText.getBoundingClientRect();
+
+        const x = (event.clientX - rect.left) / rect.width - 0.5;
+        const y = (event.clientY - rect.top) / rect.height - 0.5;
+
+        fallText.style.setProperty("--cursor-x", x.toFixed(2));
+        fallText.style.setProperty("--cursor-y", y.toFixed(2));
+    });
+
+    fallText.addEventListener("mouseleave", () => {
+        fallText.style.setProperty("--cursor-x", "0");
+        fallText.style.setProperty("--cursor-y", "0");
+    });
+}
+

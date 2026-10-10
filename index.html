@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10131c">
+  <meta name="description" content="Discover college clubs, campus events, and your next community.">
+  <title>ClubSphere — Find Your People</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ==========================================
+     SCROLLING BACKGROUND SPINNER
+
+     Purpose:
+     Displays the logo behind the website.
+     JavaScript rotates it as the user scrolls.
+========================================== -->
+
+<div class="scroll-spinner" aria-hidden="true">
+    <img
+        src="assets/clubespare-spinner.png"
+        alt=""
+        class="scroll-spinner__image"
+    />
+</div>
+
+  <div class="ambient ambient-a" aria-hidden="true"></div><div class="ambient ambient-b" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="ClubSphere home"><span class="brand-symbol"><img src="assets/logo.png" alt="ClubSphere logo"></span><span class="brand-name">ClubSphere</span></a>
+    <button class="mobile-menu" id="mobileMenu" aria-label="Open navigation" aria-expanded="false">☰</button>
+    <nav class="navigation" id="navigation" aria-label="Main navigation">
+      <a class="nav-item active" href="#home">Discover</a><a class="nav-item" href="#clubs">Clubs</a><a class="nav-item" href="#events">Events</a><a class="nav-item" href="#about">About</a>
+      <button class="icon-button" id="themeToggle" aria-label="Switch color theme" title="Switch theme"><span id="themeIcon">☼</span></button>
+      <button class="button button-primary nav-signin" id="signInBtn">Sign in <span>↗</span></button>
+    </nav>
+  </header>
+
+  <main id="home">
+    <section class="hero shell">
+      <div class="hero-copy reveal">
+        <div class="live-pill"><span class="pulse"></span> YOUR CAMPUS, IN ONE PLACE</div>
+        <!-- <h1>Find your people.<br><span class="gradient-text">Find your thing.</span></h1> -->
+
+<h1 class="fall-text" aria-label="Find your people. Find your thing.">
+  <span class="fall-word">
+    <span>Find</span>
+    <span>your</span>
+    <span class="gradient-text" > people. </span>
+  </span>
+  <span class="fall-word">
+    <span>Find</span>
+    <span>your</span>
+    <span class="gradient-text">thing.</span>
+  </span>
+</h1>
+
+        <p class="hero-lede">The best part of college happens when you get involved. Discover communities, explore events, and turn your interests into your next big thing.</p>
+        <div class="hero-cta"><a href="#clubs" class="button button-primary button-xl">Explore communities <span>↗</span></a><a href="#events" class="button button-ghost button-xl"><span class="play-icon">▶</span> What’s happening?</a></div>
+        <div class="social-proof"><div class="avatar-stack"><span>K</span><span>N</span><span>M</span><span>+</span></div><span><b>One campus.</b> Countless ways to belong.</span></div>
+      </div>
+      <div class="hero-visual reveal" aria-label="Abstract illustration representing student communities">
+        <div class="visual-grid"></div><div class="visual-ring ring-1"></div><div class="visual-ring ring-2"></div><div class="visual-ring ring-3"></div>
+        <div class="campus-logo-card"><img src="assets/mirai-school-of-technology.jpeg" alt="Mirai School of Technology logo"></div>
+        <div class="float-card float-club"><span class="float-emoji purple">✦</span><span><b>Find your community</b><small>There’s a place for you</small></span><span class="float-arrow">↗</span></div>
+        <div class="float-card float-event"><span class="float-emoji mint">◷</span><span><b>Something’s on</b><small>Make plans, not excuses</small></span></div>
+        <span class="decor-star star-a">✦</span><span class="decor-star star-b">✧</span><span class="decor-dot"></span>
+      </div>
+      <div class="hero-bottom"><span>BUILT FOR THE CAMPUS EXPERIENCE</span><span class="scroll-cue">SCROLL TO EXPLORE <span>↓</span></span></div>
+    </section>
+
+    <section class="metrics shell" aria-label="Platform highlights">
+      <div class="metric"><span class="metric-icon">⊞</span><div><strong data-count="4">04</strong><span>communities to discover</span></div></div>
+      <div class="metric"><span class="metric-icon mint-icon">↗</span><div><strong>One</strong><span>connected campus</span></div></div>
+      <div class="metric"><span class="metric-icon orange-icon">Ꝏ</span><div><strong>Infinite</strong><span>ways to get involved</span></div></div>
+      <div class="metric-note"><span class="status-dot"></span> YOUR NEXT CHAPTER STARTS HERE</div>
+    </section>
+
+    <section class="section shell" id="clubs">
+      <div class="section-top reveal"><div><div class="section-kicker">THE PEOPLE MAKE THE PLACE <span></span></div><h2>Pick your <span class="gradient-text">next thing.</span></h2><p class="section-intro">A team to build with. A stage to own. A game to win. Find what moves you.</p></div><div class="section-count"><strong>04</strong><span>CLUBS<br>AND COUNTING</span></div></div>
+      <div class="discovery-toolbar">
+        <label class="search-field"><span class="search-icon">⌕</span><input id="clubSearch" type="search" placeholder="Search by club, interest, or vibe…" aria-label="Search clubs"><kbd>⌘ K</kbd></label>
+        <div class="filters" role="group" aria-label="Filter clubs"><button class="filter active" data-filter="all">All <span>04</span></button><button class="filter" data-filter="Technology">Technology</button><button class="filter" data-filter="Entrepreneurship">Startups</button><button class="filter" data-filter="Events">Culture</button><button class="filter" data-filter="Sports">Sports</button></div>
+      </div>
+      <div class="club-grid" id="clubGrid">
+        <article class="club-card club-kaizen" data-name="kaizen tech technology development competitive programming cp ki coding software" data-category="Technology">
+          <div class="club-cover"><img src="assets/kaizen.png" alt="KAIZEN Tech club logo"><span class="cover-index">COMMUNITY / 01</span><button class="favorite" data-favorite="KAIZEN" aria-label="Save KAIZEN to favourites" aria-pressed="false">♡</button><span class="category-tag">TECHNOLOGY</span></div>
+          <div class="club-body"><div class="club-heading"><h3>KAIZEN</h3><span class="club-mark">K.</span></div><p>Where developers, competitive programmers, and KI minds come together to build what’s next.</p><div class="tag-row"><span>Development</span><span>CP</span><span>KI</span></div><button class="card-action" data-club="KAIZEN">Explore community <span>↗</span></button></div>
+        </article>
+        <article class="club-card club-nex" data-name="nex-cell nex cell entrepreneurship startups innovation ideas business create" data-category="Entrepreneurship">
+          <div class="club-cover"><img src="assets/nex-cell.png" alt="NEX-CELL club logo"><span class="cover-index">COMMUNITY / 02</span><button class="favorite" data-favorite="NEX-CELL" aria-label="Save NEX-CELL to favourites" aria-pressed="false">♡</button><span class="category-tag">ENTREPRENEURSHIP</span></div>
+          <div class="club-body"><div class="club-heading"><h3>NEX-CELL</h3><span class="club-mark">N.</span></div><p>From first spark to first startup. Bring your ideas, curiosity, and willingness to create.</p><div class="tag-row"><span>Startups</span><span>Innovation</span><span>Ideas</span></div><button class="card-action" data-club="NEX-CELL">Explore community <span>↗</span></button></div>
+        </article>
+        <article class="club-card club-malhar" data-name="malhar event events entertainment culture cultural organizing college fest" data-category="Events">
+          <div class="club-cover"><img src="assets/malhar.png" alt="MALHAR club logo"><span class="cover-index">COMMUNITY / 03</span><button class="favorite" data-favorite="MALHAR" aria-label="Save MALHAR to favourites" aria-pressed="false">♡</button><span class="category-tag">EVENTS & CULTURE</span></div>
+          <div class="club-body"><div class="club-heading"><h3>MALHAR</h3><span class="club-mark">M.</span></div><p>Making campus memories happen through events, entertainment, and experiences worth sharing.</p><div class="tag-row"><span>Events</span><span>Culture</span><span>Entertainment</span></div><button class="card-action" data-club="MALHAR">Explore community <span>↗</span></button></div>
+        </article>
+        <article class="club-card club-khel" data-name="khel society sports games tournaments football cricket athletics team" data-category="Sports">
+          <div class="club-cover"><div class="khel-logo"><strong>KS</strong><span>Khel Society</span><i>✦</i></div><span class="cover-index">COMMUNITY / 04</span><button class="favorite" data-favorite="Khel Society" aria-label="Save Khel Society to favourites" aria-pressed="false">♡</button><span class="category-tag">SPORTS</span></div>
+          <div class="club-body"><div class="club-heading"><h3>Khel Society</h3><span class="club-mark">K.</span></div><p>Bring your game face. Play, compete, and build team spirit across every kind of sport.</p><div class="tag-row"><span>Sports</span><span>Tournaments</span><span>Teamwork</span></div><button class="card-action" data-club="Khel Society">Explore community <span>↗</span></button></div>
+        </article>
+      </div>
+      <div class="empty-state" id="emptyState" hidden><span>⌕</span><h3>No communities found</h3><p>Try another search or switch to a different category.</p><button class="button button-ghost" id="clearFilters">Clear filters</button></div>
+      <div class="directory-footer"><span><span class="status-dot"></span> MORE COMMUNITIES CAN BE ADDED BY COLLEGE ADMINS</span><a href="#about">How it works <span>↗</span></a></div>
+    </section>
+
+    <section class="events-section" id="events"><div class="shell events-inner">
+      <div class="event-copy reveal"><div class="section-kicker light-kicker">SAVE A SPOT FOR SOMETHING GOOD <span></span></div><h2>Don’t just hear<br>about it. <span>Be there.</span></h2><p>From hands-on tech sessions to startup conversations, campus celebrations, and tournaments—your next favourite memory is out there.</p><button class="button button-white" id="eventsExplore">Explore event ideas <span>↗</span></button></div>
+      <div class="event-stack reveal">
+        <article class="event-card"><div class="event-symbol symbol-purple">⌘</div><div class="event-info"><span>KAIZEN · TECH</span><h3>Build something that matters</h3><p>Workshops · Projects · Coding</p></div><span class="event-arrow">↗</span></article>
+        <article class="event-card"><div class="event-symbol symbol-mint">↗</div><div class="event-info"><span>NEX-CELL · STARTUPS</span><h3>Ideas deserve a first step</h3><p>Startup talks · Pitch sessions</p></div><span class="event-arrow">↗</span></article>
+        <article class="event-card"><div class="event-symbol symbol-orange">✳</div><div class="event-info"><span>MALHAR · CAMPUS LIFE</span><h3>Make the campus come alive</h3><p>Culture · Entertainment · Events</p></div><span class="event-arrow">↗</span></article>
+        <article class="event-card"><div class="event-symbol symbol-blue">♜</div><div class="event-info"><span>Khel Society · Sports</span><h3>Play for more than the score</h3><p>Games · Tournaments · Teams</p></div><span class="event-arrow">↗</span></article>
+        <div class="event-disclaimer">Event examples are concepts, not confirmed or scheduled events.</div>
+      </div>
+    </div></section>
+
+    <section class="about-section shell" id="about">
+      <div class="about-emblem"><span>c.</span><i>✦</i></div>
+      <div class="about-copy">
+        <div class="section-kicker">A LITTLE MORE THAN A WEBSITE <span></span></div>
+        <h2>College feels different<br>when you <span class="gradient-text">belong.</span></h2>
+        <p>ClubSphere brings student communities into one easy-to-explore place. Find people who share your interests, discover opportunities, and be part of what makes your campus yours.</p>
+        <div class="about-values"><span><b>01</b> Discover</span><span><b>02</b> Connect</span><span><b>03</b> Participate</span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a class="brand" href="#home"><span class="brand-symbol"><img src="assets/logo.png" alt="ClubSphere logo"></span><span class="brand-name">ClubSphere</span></a>
+    <span class="footer-line">MADE FOR CAMPUS LIFE.</span>
+    <span class="footer-note">A student community concept · v2 UI prototype</span>
+  </footer>
+
+  <dialog id="appDialog" class="app-dialog"><button class="dialog-x" id="dialogClose" aria-label="Close dialog">×</button><div class="dialog-art" id="dialogArt">✦</div><div class="section-kicker" id="dialogKicker">CAMPUS CIRCLE</div><h2 id="dialogTitle">Find your people.</h2><p id="dialogBody">Explore your campus community.</p><div class="dialog-callout" id="dialogCallout">This is a front-end prototype. Real accounts and actions require a secure backend.</div><button class="button button-primary dialog-confirm" id="dialogConfirm">Sounds good <span>↗</span></button></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"><span>✓</span><p id="toastMessage">Saved</p></div>
+  <script src="script.js"></script>
+</body>
+</html>
